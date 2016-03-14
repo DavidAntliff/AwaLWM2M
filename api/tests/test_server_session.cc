@@ -21,11 +21,11 @@ TEST_F(TestServerSession, AwaServerSession_New_returns_valid_session)
 TEST_F(TestServerSession, AwaServerSession_New_handles_out_of_memory)
 {
     // fail the Session malloc
-    mockMallocFailCounter = 1;
+    SetBadMallocFailCounter(1);
     ASSERT_EQ(NULL, AwaServerSession_New());
 
     // fail the SessionCommon malloc
-    mockMallocFailCounter = 2;
+    SetBadMallocFailCounter(2);
     ASSERT_EQ(NULL, AwaServerSession_New());
 }
 

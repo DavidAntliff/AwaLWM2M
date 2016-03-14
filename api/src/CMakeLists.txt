@@ -100,9 +100,15 @@ add_library (Awa_static STATIC $<TARGET_OBJECTS:Awa_object>)
 set_target_properties (Awa_static PROPERTIES OUTPUT_NAME "awa")
 target_link_libraries (Awa_static libxml_static libb64_static libhmac_static)
 
+# dynamic replacement of malloc requires app to be PIC:
+#set_property (TARGET Awa_static PROPERTY POSITION_INDEPENDENT_CODE ON)
+
 add_library (Awa_shared SHARED $<TARGET_OBJECTS:Awa_object>)
 set_target_properties (Awa_shared PROPERTIES OUTPUT_NAME "awa")
 target_link_libraries (Awa_shared libxml_static libb64_static libhmac_static)
+
+# dynamic replacement of malloc requires app to be PIC:
+#set_property (TARGET Awa_shared PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 install (TARGETS Awa_shared
    LIBRARY DESTINATION /usr/lib

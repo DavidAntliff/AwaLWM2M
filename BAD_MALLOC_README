@@ -1,0 +1,3 @@
+Trying to get a LD_PRELOAD wrapper to work with Valgrind. Unfortunately valgrind isn't happy and weird memory leaks appear when running the tests.
+
+This currently doesn't build because I don't want to link the test runner against the bad_malloc library, but the linker is complaining.

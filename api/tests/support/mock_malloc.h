@@ -27,7 +27,8 @@
 extern "C" {
 #endif
 
-extern int mockMallocFailCounter;
+//extern int mockMallocFailCounter;
+void SetBadMallocFailCounter(int counter)  __attribute__((weak));
 
 #ifdef __cplusplus
 }

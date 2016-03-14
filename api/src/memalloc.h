@@ -30,10 +30,19 @@
 extern "C" {
 #endif
 
-#define Awa_MemAlloc    malloc
+// allow for compile-time override
+#ifdef MOCK_MALLOC
+extern void * mock_malloc(size_t sz);
+extern void mock_free(void *p);
+# define Awa_MemAlloc    mock_malloc
+# define Awa_MemSafeFree mock_free
+#else
+# define Awa_MemAlloc    malloc
+# define Awa_MemSafeFree free
+#endif
+
 #define Awa_MemCalloc   calloc
 #define Awa_MemRealloc  realloc
-#define Awa_MemSafeFree free
 
 #ifdef __cplusplus
 }

@@ -90,11 +90,13 @@ TEST_PATHS=--clientDaemonPath=$(LWM2M_CLIENTD_BIN) \
   --coapClientPath=$(LIBCOAP_COAP_CLIENT) \
   --bootstrapConfig=api/tests/bootstrap-gtest.config
 
+LD_PRELOAD:=$(BUILD_DIR_ABS)/api/tests/support/bad_malloc/libbad_malloc.so
+
 .PHONY: gtest_tests
 gtest_tests: $(TEST_SRC_BIN) $(TEST_API_BIN) $(TEST_TOOLS_BIN)
 	$(TEST_SRC_BIN)        $(TEST_OPTIONS) $(GTEST_OPTIONS) --gtest_output="xml:$(TEST_SRC_XML)"        $(TEST_PATHS)
 	$(TEST_STATIC_API_BIN) $(TEST_OPTIONS) $(GTEST_OPTIONS) --gtest_output="xml:$(TEST_STATIC_API_XML)" $(TEST_PATHS)
-	$(TEST_API_BIN)        $(TEST_OPTIONS) $(GTEST_OPTIONS) --gtest_output="xml:$(TEST_API_XML)"        $(TEST_PATHS)
+	LD_PRELOAD=$(LD_PRELOAD) $(TEST_API_BIN)        $(TEST_OPTIONS) $(GTEST_OPTIONS) --gtest_output="xml:$(TEST_API_XML)"        $(TEST_PATHS)
 	$(TEST_TOOLS_BIN)      $(TEST_OPTIONS) $(GTEST_OPTIONS) --gtest_output="xml:$(TEST_TOOLS_XML)"      $(TEST_PATHS)
 
 .PHONY: gdb_tests

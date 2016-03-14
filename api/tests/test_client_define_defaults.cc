@@ -60,10 +60,10 @@ TEST_F(TestClientDefineDefaultsWithDaemon, AwaClient_get_default_value_from_crea
 
 TEST_F(TestClientDefineDefaultsWithDaemon, AwaClientDefineOperation_New_handles_out_of_memory)
 {
-    mockMallocFailCounter = 1;
+    SetBadMallocFailCounter(1);
     ASSERT_EQ(NULL, AwaClientDefineOperation_New(session_));
 
-    mockMallocFailCounter = 2;
+    SetBadMallocFailCounter(2);
     ASSERT_EQ(NULL, AwaClientDefineOperation_New(session_));
 }
 

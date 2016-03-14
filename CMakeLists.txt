@@ -31,6 +31,11 @@ if (CMAKE_CROSSCOMPILING)
   set (ENABLE_GCOV OFF)
 endif ()
 
+# tests require a wrapped malloc to simulate memory errors
+#if (BUILD_TESTS)
+#  set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DMOCK_MALLOC")
+#endif ()
+
 # determine git revision as VERSION
 #execute_process (COMMAND git describe --abbrev=4 --dirty --always --tags OUTPUT_VARIABLE VERSION OUTPUT_STRIP_TRAILING_WHITESPACE)
 file (STRINGS "VERSION" VERSION)

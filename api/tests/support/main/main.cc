@@ -2,8 +2,10 @@
 #include <gtest/gtest.h>
 #include <string>
 #include <stdio.h>
+#include <malloc.h>
 
 #include "../support.h"
+#include "../mock_malloc.h"
 #include "main_cmdline.h"
 
 GTEST_API_ int main(int argc, char **argv) {

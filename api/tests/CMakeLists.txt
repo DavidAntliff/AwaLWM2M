@@ -6,7 +6,6 @@ set (test_api_runner_SOURCES
   support/support.cc
   support/process.cc
   support/daemon.cc
-  support/mock_malloc.c
   
   test_log.cc
   test_error.cc
@@ -76,9 +75,15 @@ set (test_api_runner_LIBRARIES
   pthread
   Awa_static
   libb64_static
+#  bad_malloc     # <-- trying to make this build without this
 )
 
+add_subdirectory (support/bad_malloc)
+# This doesn't work, but the intent is to get ld to ignore the missing library
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--unresolved-symbols=ignore-in-shared-libs")
+
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -g -std=c++11")
+
 if (ENABLE_GCOV)
   set (CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 --coverage")
   set (CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
@@ -92,6 +97,9 @@ set_source_files_properties (main/main_cmdline.c PROPERTIES COMPILE_FLAGS -Wno-a
 add_executable (test_api_runner ${test_api_runner_SOURCES})
 target_include_directories (test_api_runner PRIVATE ${test_api_runner_INCLUDE_DIRS})
 target_link_libraries (test_api_runner ${test_api_runner_LIBRARIES})
+
+# dynamic replacement of malloc requires app to be PIC:
+set_property (TARGET test_api_runner PROPERTY POSITION_INDEPENDENT_CODE ON)
 
 if (ENABLE_GCOV)
   target_link_libraries (test_api_runner gcov)

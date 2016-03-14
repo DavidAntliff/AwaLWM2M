@@ -3,7 +3,7 @@
 #include "awa/client.h"
 #include "arrays.h"
 #include "support/support.h"
-#include "support/mock_malloc.h"
+#include "support/bad_malloc/bad_malloc.h"
 
 namespace Awa {
 
@@ -23,7 +23,7 @@ TEST_F(TestArray, AwaIntegerArray_New_and_Free_valid_inputs)
 
 TEST_F(TestArray, AwaIntegerArray_New_handles_out_of_memory)
 {
-    mockMallocFailCounter = 1;
+    SetBadMallocFailCounter(1);
     ASSERT_EQ(NULL, AwaIntegerArray_New());
 }
 

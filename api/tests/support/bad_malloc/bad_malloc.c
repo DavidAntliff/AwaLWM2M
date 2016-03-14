@@ -20,73 +20,39 @@
  USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ************************************************************************************************************************/
 
-//#define _GNU_SOURCE
-//#include <dlfcn.h>
+#define _GNU_SOURCE
+#include <dlfcn.h>
 #include <stdio.h>
-//#include <stdlib.h>
+#include <stdlib.h>
 
-//void SetBadMallocFailCounter(int counter)
-//{
-//    // do nothing
-//    printf("DO NOTHING\n");
-//}
+static int badMallocFailCounter = 0;
 
-//int mockMallocFailCounter = 0;
-//
-//void * mock_malloc(size_t sz)
-//{
-//    void *(*libc_malloc)(size_t) = dlsym(RTLD_NEXT, "malloc");
-//
-//    // fail the malloc when the counter reaches zero
-//    if (mockMallocFailCounter > 0)
-//    {
-//        if (--mockMallocFailCounter == 0)
-//        {
-//            printf("malloc fail\n");
-//            return NULL;
-//        }
-//        else
-//        {
-//            printf("malloc fail pending %d\n", mockMallocFailCounter);
-//        }
-//    }
-//    void * p = libc_malloc(sz);
-//    printf("malloc %p\n", p);
-//    return p;
-//}
-//
-//void mock_free(void *p)
-//{
-//    void (*libc_free)(void*) = dlsym(RTLD_NEXT, "free");
-//    printf("free %p\n", p);
-//    libc_free(p);
-//}
+void SetBadMallocFailCounter(int counter)
+{
+    if (counter > 0)
+    {
+        badMallocFailCounter = counter;
+    }
+}
 
-//void * mock_malloc(size_t sz)
-//{
-//    // fail the malloc when the counter reaches zero
-//    if (mockMallocFailCounter > 0)
-//    {
-//        if (--mockMallocFailCounter == 0)
-//        {
-//            printf("malloc fail\n");
-//            return NULL;
-//        }
-//        else
-//        {
-//            printf("malloc fail pending %d\n", mockMallocFailCounter);
-//        }
-//    }
-//    return malloc(sz);
-//}
-//
-//void mock_free(void *p)
-//{
-//    free(p);
-//}
-//
-//void * mock_malloc_hook(size_t size, const void * caller)
-//{
-//    return mock_malloc(size);
-//}
+void * malloc(size_t sz)
+{
+    void *(*libc_malloc)(size_t) = dlsym(RTLD_NEXT, "malloc");
 
+    // fail the malloc when the counter reaches zero
+    if (badMallocFailCounter > 0)
+    {
+        if (--badMallocFailCounter == 0)
+        {
+            printf("bad_malloc: fail\n");
+            return NULL;
+        }
+    }
+    return(libc_malloc(sz));
+}
+
+void free(void *p)
+{
+    void (*libc_free)(void*) = dlsym(RTLD_NEXT, "free");
+    libc_free(p);
+}
