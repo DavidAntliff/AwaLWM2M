@@ -2,24 +2,39 @@ sudo: false
 language: cpp
 compiler: gcc
 
+env:
+  global:
+    # COVERITY_SCAN_TOKEN
+    - secure: "LwAfWEPAQjKZkxou5I06DvQC4i23HBDrZhOAG9kGkQsMjjqArObZiduTsLoY8VZXV4TssPeovhbT2d5KnTT1m7RiAcvFwP+4OvTmfoMvbLtqomztAcnyxncHVa945ey7lUTTTCdli/FxQtn+TS9gw2CY77BXA+apN53ur2OzARZop7ZiFaStq45JHmdk/YBoIbNUzxWApEFHMV9UUeNaFpsfAPDiJP9wlYb5DJN0idsJZrOdaTlOuabMIzM5ackkKGqVQGvQwfCP7rkhjl3k6NJGWnItB7Nn6qtcRrCL9gDSP0Nescv50cpsPwlY6kAPJhMSPEADTuzZUyvlgivO9lBm7K24TA0LhCCvPY1CdysCEHyNQit6rlWens9B63XvpUY9zY2pCvgMIwSgPQ1rrQpVv1rrMjP0ss3CFib/Vb6YjhAbO0SKKZ+Xc0fLc4RUreeTZs48SvhhCWkGnh9QyBmPztuZlp/ZRo5xufHpwzycMaKrkdOOvvin2eoZusilfBxSL2oJqzn3yXEwLDIGA9N8YoTs5Jo+jvLYOqunWv2V8rpqjjOGkxYGF/EnXgzR03q7OoOzsyMQ5Og7bYPmwsSGgvbpr/rw6AVD9fLH2pWeiJaaVTo4FgnMl+iYjWSfvoEwT7e1LhpzWH/dUNQrobKi3ZxEAc1e3S0a9M37VFg="
+
 addons:
- apt:
-  sources:
-   - george-edison55-precise-backports
-   - ubuntu-toolchain-r-test
-  packages:
-   - cmake
-   - cmake-data
-   - gcc-5
-   - g++-5
-   - python-virtualenv
+  apt:
+    sources:
+      - george-edison55-precise-backports
+      - ubuntu-toolchain-r-test
+    packages:
+      - cmake
+      - cmake-data
+      - gcc-5
+      - g++-5
+  coverity_scan:
+    # GitHub project metadata
+    project:
+      name: david-antliff-imgtec/AwaLWM2M
+      version: 1.0
+      description: Experimental
 
-install:
-    - if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
-    - virtualenv --system-site-packages venv
-    - source venv/bin/activate
-    - pip install nose
-    - pip install lxml
+    # Where email notification of build analysis results will be sent
+    notification_email: david.antliff@imgtec.com
 
-# Travis-CI does not support IPv6 addresses:
-script: make tests TEST_FILTER=*.*:-*.*_handles_IPv6_address*
+    # Commands to prepare for build_command
+    build_command_prepend: if [ "$CXX" = "g++" ]; then export CXX="g++-5" CC="gcc-5"; fi
+
+    # The command that will be added as an argument to "cov-build" to compile your project for analysis,
+    build_command: make
+
+    # Pattern to match selecting branches that will run analysis. We recommend leaving this set to 'coverity_scan'.
+    # Take care in resource usage, and consider the build frequency allowances per
+    #   https://scan.coverity.com/faq#frequency
+    branch_pattern: coverity_scan
+
